@@ -21,8 +21,8 @@ func TestBasic(t *testing.T) {
 
 func TestBasicUnk(t *testing.T) {
 	dict, _ := LoadDefaultDict()
-	wlst := Segment("กะจะเว", dict)
-	if wlst[0] != "กะ" || wlst[1] != "จะเว" || len(wlst) != 2 {
+	wlst := Segment("จะเว", dict)
+	if wlst[0] != "จะ" || wlst[1] != "เว" || len(wlst) != 2 {
 		t.Fail()
 	}
 }
