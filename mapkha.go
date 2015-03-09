@@ -6,6 +6,29 @@ import ("io/ioutil"
 	"runtime"
 )
 
+const (
+	DICT = 1
+	UNK = 2
+	INIT = 3
+)
+
+const (
+	LEFT = 1
+	RIGHT = 2
+)
+
+type TextRange struct {
+	s int
+	e int
+}
+
+type Edge struct {
+	w int
+	unk int
+	p int
+	etype int
+}
+
 func LoadDict(path string) ([][]rune, error) {
 	b_slice, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -79,21 +102,6 @@ func DictSeek(policy int, dict [][]rune, l int, r int, offset int, ch rune) (int
 	return ans, found
 }
 
-type TextRange struct {
-	s int
-	e int
-}
-
-type Edge struct {
-	w int
-	unk int
-	p int
-}
-
-const (
-	LEFT = 1
-	RIGHT = 2
-)
 
 func TransitAll(acc []DictAcceptor, ch rune, dict [][]rune) []DictAcceptor {
 	_acc := append(acc, DictAcceptor{0, len(dict)-1, false, 0, true})
@@ -128,19 +136,20 @@ func BestEdge(edges []Edge) *Edge {
 	return e
 }
 
-func BuildEdges(i int, acc []DictAcceptor, g []Edge) []Edge {
+func BuildEdges(i int, acc []DictAcceptor, g []Edge, left int) []Edge {
 	edges := make([]Edge, 0, len(acc))
 	for _, a := range(acc) {
 		if a.final {
 			p := i - a.offset + 1
 			src := g[p]
-			edge := Edge{src.w + 1, src.unk, p}
+			edge := Edge{src.w + 1, src.unk, p, DICT}
 			edges = append(edges, edge)			
 		}
 	}
 
 	if len(edges) == 0 {
-		edge := Edge{100, 100, 0}
+		src := g[left]
+		edge := Edge{src.w + 1, src.unk + 1, left, UNK}
 		edges = append(edges, edge)
 	}
 	return edges
@@ -148,12 +157,16 @@ func BuildEdges(i int, acc []DictAcceptor, g []Edge) []Edge {
 
 func BuildGraph(t []rune, dict [][]rune) []Edge {
 	g := make([]Edge, len(t) + 1)
-	g[0] = Edge{0, 0, -1}
+	g[0] = Edge{0, 0, -1, INIT}
 	var acc []DictAcceptor
+	left := 0
 	for i, ch := range(t) {
 		acc = TransitAll(acc, ch, dict)
-		edges := BuildEdges(i, acc, g)
+		edges := BuildEdges(i, acc, g, left)
 		e := BestEdge(edges)
+		if e.etype != UNK {
+			left = e.p
+		}
 		g[i+1] = *e 
 	}
 	return g
