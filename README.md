@@ -1,4 +1,4 @@
-# mapkha
+# Mapkha
 Thai word segmentation program in Go
 
 ## Example
