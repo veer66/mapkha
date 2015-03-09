@@ -2,6 +2,8 @@ package mapkha
 
 import ("io/ioutil"
 	"strings"
+	"path"
+	"runtime"
 )
 
 func LoadDict(path string) ([][]rune, error) {
@@ -16,6 +18,11 @@ func LoadDict(path string) ([][]rune, error) {
 		rwords[i] = []rune(word)
 	}
 	return rwords, nil
+}
+
+func LoadDefaultDict() ([][]rune, error) {
+	_, filename, _, _ := runtime.Caller(0)
+	return LoadDict(path.Join(path.Dir(filename), "tdict-std.txt"))
 }
 
 type DictAcceptor struct {

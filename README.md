@@ -20,7 +20,7 @@ func check(e error) {
 }
 
 func main() {
-    dict, e := m.LoadDict("tdict-std.txt")
+    dict, e := m.LoadDefaultDict()
     check(e)
     scanner := bufio.NewScanner(os.Stdin)
     for scanner.Scan() {
