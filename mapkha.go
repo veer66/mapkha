@@ -3,6 +3,8 @@ package main
 import ("fmt"
 	"io/ioutil"
 	"strings"
+	"bufio"
+	"os"
 )
 
 func check(e error) {
@@ -170,7 +172,7 @@ func GraphToRanges(g []Edge) []TextRange {
 		j--
 		e = s
 	}
-	return ranges[j:]
+	return ranges[j+1:]
 }
 
 func Segment(_t string, dict [][]rune) []string {
@@ -186,6 +188,8 @@ func Segment(_t string, dict [][]rune) []string {
 func main() {
 	dict, e := LoadDict("tdict-std.txt")
 	check(e)
-	wl := Segment("ตัดคำไหม", dict)
-	fmt.Println(wl)
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		fmt.Println(strings.Join(Segment(scanner.Text(), dict), "|"))
+	}
 }
