@@ -1,5 +1,5 @@
 # Mapkha
-Thai word segmentation program in Go
+Thai word segmentation (wordcut; word boundary identification; ตัดคำ) program in Go (golang)
 
 ## Example
 
