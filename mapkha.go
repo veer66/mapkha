@@ -172,33 +172,18 @@ func BuildGraph(t []rune, dict [][]rune) []Edge {
 	return g
 }
 
+// Improved as Roger Peppe suggested in his tweet
+// https://twitter.com/rogpeppe/status/574911374645682176
 func GraphToRanges(g []Edge) []TextRange {
-	_ranges := make([]TextRange, 0, len(g))
-	e := len(g) - 1
-	var s int
-	for {
-		if e <= 0 {
-			break
-		}
-
-		s = g[e].p
-
-		r := TextRange{s,e}
-
-		_ranges = append(_ranges, r)
-		
+	ranges := make([]TextRange, len(g))
+	j := len(ranges)-1
+	for e := len(g) - 1; e > 0; {
+		s := g[e].p
+		ranges[j] = TextRange{s, e}
+		j--
 		e = s
 	}
-
-	l := len(_ranges)
-	
-	ranges := make([]TextRange, l)
-
-	for i, r := range(_ranges) {
-		ranges[l - i - 1] = r
-	}
-
-	return ranges
+	return ranges[j:]
 }
 
 func FindRanges(t []rune, dict [][]rune) []TextRange {
