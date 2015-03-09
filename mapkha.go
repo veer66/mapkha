@@ -50,16 +50,11 @@ func (a *DictAcceptor) Transit(ch rune, dict [][]rune) {
 func DictSeek(policy int, dict [][]rune, l int, r int, offset int, ch rune) (int, bool) {
 	ans := 0
 	found := false
-	m := 0
-	
+	m := 0	
 	if policy != LEFT && policy != RIGHT {
 		return 0, found
-	}
-	
-	for {
-		if l > r {
-			break
-		}
+	}	
+	for ;l<=r; {
 		m = (l+r) / 2
 		w := dict[m]
 		wlen := len(w)
@@ -80,8 +75,7 @@ func DictSeek(policy int, dict [][]rune, l int, r int, offset int, ch rune) (int
 				}
 			}			
 		}
-	}
-	
+	}	
 	return ans, found
 }
 
@@ -114,12 +108,8 @@ func TransitAll(acc []DictAcceptor, ch rune, dict [][]rune) []DictAcceptor {
 }
 
 func Better(a *Edge, b *Edge) bool {
-	if a.unk < a.unk {
+	if a.unk < a.unk || a.w < b.w {
 		return true
-	} else {
-		if a.w < b.w {
-			return true
-		}
 	}
 	return false
 }
@@ -129,15 +119,12 @@ func BestEdge(edges []Edge) *Edge {
 	if l == 0 {
 		return nil
 	}
-
 	e := &edges[0]
-
 	for i := 1; i < l; i++ {
 		if Better(&edges[i], e) {
-			e = &edges[i];
+			e = &edges[i]
 		}
 	}
-	
 	return e
 }
 
@@ -186,25 +173,19 @@ func GraphToRanges(g []Edge) []TextRange {
 	return ranges[j:]
 }
 
-func FindRanges(t []rune, dict [][]rune) []TextRange {
-	g := BuildGraph(t, dict)
-	ranges := GraphToRanges(g)
-	return ranges
-}
-
-func Segment(_t string, dict [][]rune) ([]string, error) {
+func Segment(_t string, dict [][]rune) []string {
 	t := []rune(_t)
-	ranges := FindRanges(t, dict)
+	ranges := GraphToRanges(BuildGraph(t, dict)) 
 	wlst := make([]string, len(ranges))
 	for i, r := range ranges {
 		wlst[i] = string(t[r.s:r.e])
 	}
-	return wlst, nil
+	return wlst
 }
 
 func main() {
 	dict, e := LoadDict("tdict-std.txt")
 	check(e)
-	wl, e := Segment("ตัดคำไหม", dict)
+	wl := Segment("ตัดคำไหม", dict)
 	fmt.Println(wl)
 }
