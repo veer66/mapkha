@@ -1,17 +1,8 @@
-package main
+package mapkha
 
-import ("fmt"
-	"io/ioutil"
+import ("io/ioutil"
 	"strings"
-	"bufio"
-	"os"
 )
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
 
 func LoadDict(path string) ([][]rune, error) {
 	b_slice, err := ioutil.ReadFile(path)
@@ -183,13 +174,4 @@ func Segment(_t string, dict [][]rune) []string {
 		wlst[i] = string(t[r.s:r.e])
 	}
 	return wlst
-}
-
-func main() {
-	dict, e := LoadDict("tdict-std.txt")
-	check(e)
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		fmt.Println(strings.Join(Segment(scanner.Text(), dict), "|"))
-	}
 }
