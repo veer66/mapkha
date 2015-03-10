@@ -20,11 +20,11 @@ func NewWordcut(dict [][]rune) *Wordcut {
 	return &Wordcut{dict}
 }
 
-func TransitAll(acc []DictAcceptor, ch rune, dict [][]rune) []DictAcceptor {
-	_acc := append(acc, *NewDictAcceptor(0, len(dict)-1))
+func (w *Wordcut) TransitAll(acc []DictAcceptor, ch rune) []DictAcceptor {
+	_acc := append(acc, *NewDictAcceptor(0, len(w.dict)-1))
 	__acc := make([]DictAcceptor, 0, len(_acc))
 	for _, a := range(_acc) {
-		a.Transit(ch, dict)
+		a.Transit(ch, w.dict)
 		if a.valid {
 			__acc = append(__acc, a)
 		}
@@ -72,13 +72,13 @@ func BuildEdges(i int, acc []DictAcceptor, g []Edge, left int) []Edge {
 	return edges
 }
 
-func BuildGraph(t []rune, dict [][]rune) []Edge {
+func (w *Wordcut) BuildGraph(t []rune) []Edge {
 	g := make([]Edge, len(t) + 1)
 	g[0] = Edge{0, 0, -1, INIT}
 	var acc []DictAcceptor
 	left := 0
 	for i, ch := range(t) {
-		acc = TransitAll(acc, ch, dict)
+		acc = w.TransitAll(acc, ch)
 		edges := BuildEdges(i, acc, g, left)
 		e := BestEdge(edges)
 		if e.etype != UNK {
@@ -105,7 +105,7 @@ func GraphToRanges(g []Edge) []TextRange {
 
 func (w *Wordcut) Segment(_t string) []string {
 	t := []rune(_t)
-	ranges := GraphToRanges(BuildGraph(t, w.dict)) 
+	ranges := GraphToRanges(w.BuildGraph(t)) 
 	wlst := make([]string, len(ranges))
 	for i, r := range ranges {
 		wlst[i] = string(t[r.s:r.e])
