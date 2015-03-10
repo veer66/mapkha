@@ -12,6 +12,14 @@ type Edge struct {
 	etype int
 }
 
+type Wordcut struct {
+	dict [][]rune
+}
+
+func NewWordcut(dict [][]rune) *Wordcut {
+	return &Wordcut{dict}
+}
+
 func TransitAll(acc []DictAcceptor, ch rune, dict [][]rune) []DictAcceptor {
 	_acc := append(acc, *NewDictAcceptor(0, len(dict)-1))
 	__acc := make([]DictAcceptor, 0, len(_acc))
@@ -95,9 +103,9 @@ func GraphToRanges(g []Edge) []TextRange {
 	return ranges[j+1:]
 }
 
-func Segment(_t string, dict [][]rune) []string {
+func (w *Wordcut) Segment(_t string) []string {
 	t := []rune(_t)
-	ranges := GraphToRanges(BuildGraph(t, dict)) 
+	ranges := GraphToRanges(BuildGraph(t, w.dict)) 
 	wlst := make([]string, len(ranges))
 	for i, r := range ranges {
 		wlst[i] = string(t[r.s:r.e])
