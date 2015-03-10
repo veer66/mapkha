@@ -25,13 +25,20 @@ func LoadDefaultDict() ([][]rune, error) {
 	return LoadDict(path.Join(path.Dir(filename), "tdict-std.txt"))
 }
 
-func DictSeek(policy int, dict [][]rune, l int, r int, offset int, ch rune) (int, bool) {
+
+func DictSeek(policy int, idx *DictIndex, dict [][]rune, l int, r int, offset int, ch rune) (int, bool) {
 	ans := 0
 	found := false
 	m := 0	
 	if policy != LEFT && policy != RIGHT {
 		return 0, found
-	}	
+	}
+
+	if idx != nil && offset == 0 {
+		ans, found = idx.Get([]rune{ch}, policy)
+		return ans, found
+	}
+	
 	for ;l<=r; {
 		m = (l+r) / 2
 		w := dict[m]
@@ -53,6 +60,6 @@ func DictSeek(policy int, dict [][]rune, l int, r int, offset int, ch rune) (int
 				}
 			}			
 		}
-	}	
+	}
 	return ans, found
 }
