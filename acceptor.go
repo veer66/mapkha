@@ -20,13 +20,13 @@ func (a *DictAcceptor) Reset(l int, r int) {
 	a.valid = true
 }
 
-func (a *DictAcceptor) Transit(ch rune, dict [][]rune) {
+func (a *DictAcceptor) Transit(ch rune, dict *Dict) {
 	var found bool
-	a.l, found = DictSeek(LEFT, dict, a.l, a.r, a.offset, ch)
+	a.l, found = dict.DictSeek(LEFT, a.l, a.r, a.offset, ch)
 	if found {
-		a.r, _ = DictSeek(RIGHT, dict, a.l, a.r, a.offset, ch)
+		a.r, _ = dict.DictSeek(RIGHT, a.l, a.r, a.offset, ch)
 		a.offset++
-		w := dict[a.l]
+		w := dict.GetWord(a.l)
 		wlen := len(w)
 		a.final = (wlen == a.offset)
 	} else {

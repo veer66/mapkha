@@ -6,14 +6,51 @@ import ("io/ioutil"
 	"runtime"
 )
 
-func DictSeek(policy int, dict [][]rune, l int, r int, offset int, ch rune) (int, bool) {
+type Dict struct {
+	dict [][]rune
+	l int
+	idx *Index
+}
+
+func LoadDict(path string) (*Dict, error) {
+	b_slice, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	data := string(b_slice)
+	swords := strings.Split(data, "\n")
+	rwords := make([][]rune, len(swords))
+	for i, word := range swords {
+		rwords[i] = []rune(word)
+	}
+	dict := Dict{rwords, len(rwords), nil}
+	dict.idx = MakeIndex(&dict)
+	return &dict, nil
+}
+
+func LoadDefaultDict() (*Dict, error) {
+	_, filename, _, _ := runtime.Caller(0)
+	return LoadDict(path.Join(path.Dir(filename), "tdict-std.txt"))
+}
+
+
+func (d *Dict) DictSeek(policy int, l int, r int, offset int, ch rune) (int, bool) {
 	ans := 0
 	found := false
 	m := 0	
+
+	if d.idx != nil {
+		if offset == 0 {
+			return d.idx.Get0(policy, ch)
+		} else if offset == 1 {
+			prev := d.dict[l][0]
+			return d.idx.Get1(policy, prev, ch)
+		}
+	}
 	
 	for ;l<=r; {
 		m = (l+r) / 2
-		w := dict[m]
+		w := d.dict[m]
 		wlen := len(w)
 		if wlen <= offset {
 			l = m + 1
@@ -36,21 +73,14 @@ func DictSeek(policy int, dict [][]rune, l int, r int, offset int, ch rune) (int
 	return ans, found
 }
 
-func LoadDict(path string) ([][]rune, error) {
-	b_slice, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	data := string(b_slice)
-	swords := strings.Split(data, "\n")
-	rwords := make([][]rune, len(swords))
-	for i, word := range swords {
-		rwords[i] = []rune(word)
-	}
-	return rwords, nil
+func (d *Dict) GetWord(i int) []rune {
+	return d.dict[i]
 }
 
-func LoadDefaultDict() ([][]rune, error) {
-	_, filename, _, _ := runtime.Caller(0)
-	return LoadDict(path.Join(path.Dir(filename), "tdict-std.txt"))
+func (d *Dict) R() int {
+	return d.l - 1
+}
+
+func (d *Dict) GetSlice() [][]rune {
+	return d.dict
 }

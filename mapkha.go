@@ -13,16 +13,16 @@ type Edge struct {
 }
 
 type Wordcut struct {
-	dict [][]rune
+	dict *Dict
 	pool *AccPool
 }
 
-func NewWordcut(dict [][]rune) *Wordcut {
+func NewWordcut(dict *Dict) *Wordcut {
 	return &Wordcut{dict, NewAccPool()}
 }
 
 func (w *Wordcut) TransitAll(acc []*DictAcceptor, ch rune) []*DictAcceptor {
-	_acc := append(acc, w.pool.Obtain(0, len(w.dict)-1))
+	_acc := append(acc, w.pool.Obtain(0, w.dict.R()))
 	__acc := make([]*DictAcceptor, 0, len(_acc))
 	for _, a := range(_acc) {
 		a.Transit(ch, w.dict)
