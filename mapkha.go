@@ -14,15 +14,16 @@ type Edge struct {
 
 type Wordcut struct {
 	dict [][]rune
+	pool *AccPool
 }
 
 func NewWordcut(dict [][]rune) *Wordcut {
-	return &Wordcut{dict}
+	return &Wordcut{dict, NewAccPool()}
 }
 
-func (w *Wordcut) TransitAll(acc []DictAcceptor, ch rune) []DictAcceptor {
-	_acc := append(acc, *NewDictAcceptor(0, len(w.dict)-1))
-	__acc := make([]DictAcceptor, 0, len(_acc))
+func (w *Wordcut) TransitAll(acc []*DictAcceptor, ch rune) []*DictAcceptor {
+	_acc := append(acc, w.pool.Obtain(0, len(w.dict)-1))
+	__acc := make([]*DictAcceptor, 0, len(_acc))
 	for _, a := range(_acc) {
 		a.Transit(ch, w.dict)
 		if a.valid {
@@ -53,7 +54,7 @@ func BestEdge(edges []Edge) *Edge {
 	return e
 }
 
-func BuildEdges(i int, acc []DictAcceptor, g []Edge, left int) []Edge {
+func BuildEdges(i int, acc []*DictAcceptor, g []Edge, left int) []Edge {
 	edges := make([]Edge, 0, len(acc))
 	for _, a := range(acc) {
 		if a.final {
@@ -75,7 +76,7 @@ func BuildEdges(i int, acc []DictAcceptor, g []Edge, left int) []Edge {
 func (w *Wordcut) BuildGraph(t []rune) []Edge {
 	g := make([]Edge, len(t) + 1)
 	g[0] = Edge{0, 0, -1, INIT}
-	var acc []DictAcceptor
+	var acc []*DictAcceptor
 	left := 0
 	for i, ch := range(t) {
 		acc = w.TransitAll(acc, ch)
@@ -110,5 +111,6 @@ func (w *Wordcut) Segment(_t string) []string {
 	for i, r := range ranges {
 		wlst[i] = string(t[r.s:r.e])
 	}
+	w.pool.Reset()
 	return wlst
 }
