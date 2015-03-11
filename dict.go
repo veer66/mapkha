@@ -42,9 +42,6 @@ func (d *Dict) DictSeek(policy int, l int, r int, offset int, ch rune) (int, boo
 	if d.idx != nil {
 		if offset == 0 {
 			return d.idx.Get0(policy, ch)
-		} else if offset == 1 {
-			prev := d.dict[l][0]
-			return d.idx.Get1(policy, prev, ch)
 		}
 	}
 	
