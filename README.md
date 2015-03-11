@@ -20,13 +20,13 @@ func check(e error) {
 }
 
 func main() {
-	dict, e := m.LoadDefaultDict()
-	check(e)
+    dict, e := m.LoadDefaultDict()
+    check(e)
     wordcut := m.NewWordcut(dict)
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		fmt.Println(strings.Join(wordcut.Segment(scanner.Text()), "|"))
-	}
+    scanner := bufio.NewScanner(os.Stdin)
+    for scanner.Scan() {
+        fmt.Println(strings.Join(wordcut.Segment(scanner.Text()), "|"))
+    }
 }
 
 ```
