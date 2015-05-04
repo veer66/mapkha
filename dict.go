@@ -18,9 +18,9 @@ func LoadDict(path string) (*Dict, error) {
 		return nil, err
 	}
 	data := string(b_slice)
-	swords := strings.Split(data, "\n")
+	swords := strings.Split(data, "\r\n")	
 	rwords := make([][]rune, len(swords))
-	for i, word := range swords {
+	for i, word := range swords {		
 		rwords[i] = []rune(word)
 	}
 	dict := Dict{rwords, len(rwords), nil}
