@@ -1,15 +1,16 @@
 package mapkha
 
-import ("io/ioutil"
+import (
+	"io/ioutil"
 	"path"
-	"strings"
 	"runtime"
+	"strings"
 )
 
 type Dict struct {
 	dict [][]rune
-	l int
-	idx *Index
+	l    int
+	idx  *Index
 }
 
 func LoadDict(path string) (*Dict, error) {
@@ -18,9 +19,9 @@ func LoadDict(path string) (*Dict, error) {
 		return nil, err
 	}
 	data := string(b_slice)
-	swords := strings.Split(data, "\r\n")	
+	swords := strings.Split(data, "\r\n")
 	rwords := make([][]rune, len(swords))
-	for i, word := range swords {		
+	for i, word := range swords {
 		rwords[i] = []rune(word)
 	}
 	dict := Dict{rwords, len(rwords), nil}
@@ -33,20 +34,19 @@ func LoadDefaultDict() (*Dict, error) {
 	return LoadDict(path.Join(path.Dir(filename), "tdict-std.txt"))
 }
 
-
 func (d *Dict) DictSeek(policy int, l int, r int, offset int, ch rune) (int, bool) {
 	ans := 0
 	found := false
-	m := 0	
+	m := 0
 
 	if d.idx != nil {
 		if offset == 0 {
 			return d.idx.Get0(policy, ch)
 		}
 	}
-	
-	for ;l<=r; {
-		m = (l+r) / 2
+
+	for l <= r {
+		m = (l + r) / 2
 		w := d.dict[m]
 		wlen := len(w)
 		if wlen <= offset {
@@ -61,10 +61,12 @@ func (d *Dict) DictSeek(policy int, l int, r int, offset int, ch rune) (int, boo
 				ans = m
 				found = true
 				switch policy {
-				case LEFT: r = m - 1
-				case RIGHT: l = m + 1
+				case LEFT:
+					r = m - 1
+				case RIGHT:
+					l = m + 1
 				}
-			}			
+			}
 		}
 	}
 	return ans, found

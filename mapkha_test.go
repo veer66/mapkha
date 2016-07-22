@@ -1,7 +1,7 @@
 package mapkha
 
 import (
-    "testing"
+	"testing"
 )
 
 func TestLoadDefaultDict(t *testing.T) {
@@ -20,7 +20,6 @@ func TestBasic(t *testing.T) {
 	}
 }
 
-
 func TestBasicUnk(t *testing.T) {
 	dict, _ := LoadDefaultDict()
 	wordcut := NewWordcut(dict)
@@ -29,5 +28,3 @@ func TestBasicUnk(t *testing.T) {
 		t.Fail()
 	}
 }
-
-

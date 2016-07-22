@@ -4,7 +4,7 @@ type l0idx map[rune]int
 type l1idx map[rune](l0idx)
 
 type Index struct {
-	left0 l0idx
+	left0  l0idx
 	right0 l0idx
 }
 
@@ -35,4 +35,3 @@ func (idx *Index) Get0(policy int, ch rune) (int, bool) {
 	}
 	return i, found
 }
-

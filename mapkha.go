@@ -6,9 +6,9 @@ type TextRange struct {
 }
 
 type Edge struct {
-	w int
-	unk int
-	p int
+	w     int
+	unk   int
+	p     int
 	etype int
 }
 
@@ -24,7 +24,7 @@ func NewWordcut(dict *Dict) *Wordcut {
 func (w *Wordcut) TransitAll(acc []*DictAcceptor, ch rune) []*DictAcceptor {
 	_acc := append(acc, w.pool.Obtain(0, w.dict.R()))
 	__acc := make([]*DictAcceptor, 0, len(_acc))
-	for _, a := range(_acc) {
+	for _, a := range _acc {
 		a.Transit(ch, w.dict)
 		if a.valid {
 			__acc = append(__acc, a)
@@ -56,7 +56,7 @@ func BestEdge(edges []Edge) *Edge {
 
 func BuildEdges(i int, acc []*DictAcceptor, g []Edge, left int) []Edge {
 	edges := make([]Edge, 0, len(acc))
-	for _, a := range(acc) {
+	for _, a := range acc {
 		if a.final {
 			p := i - a.offset + 1
 			src := g[p]
@@ -74,18 +74,18 @@ func BuildEdges(i int, acc []*DictAcceptor, g []Edge, left int) []Edge {
 }
 
 func (w *Wordcut) BuildGraph(t []rune) []Edge {
-	g := make([]Edge, len(t) + 1)
+	g := make([]Edge, len(t)+1)
 	g[0] = Edge{0, 0, -1, INIT}
 	var acc []*DictAcceptor
 	left := 0
-	for i, ch := range(t) {
+	for i, ch := range t {
 		acc = w.TransitAll(acc, ch)
 		edges := BuildEdges(i, acc, g, left)
 		e := BestEdge(edges)
 		if e.etype != UNK {
 			left = i + 1
 		}
-		g[i+1] = *e 
+		g[i+1] = *e
 	}
 	return g
 }
@@ -94,7 +94,7 @@ func (w *Wordcut) BuildGraph(t []rune) []Edge {
 // https://twitter.com/rogpeppe/status/574911374645682176
 func GraphToRanges(g []Edge) []TextRange {
 	ranges := make([]TextRange, len(g))
-	j := len(ranges)-1
+	j := len(ranges) - 1
 	for e := len(g) - 1; e > 0; {
 		s := g[e].p
 		ranges[j] = TextRange{s, e}
@@ -106,7 +106,7 @@ func GraphToRanges(g []Edge) []TextRange {
 
 func (w *Wordcut) Segment(_t string) []string {
 	t := []rune(_t)
-	ranges := GraphToRanges(w.BuildGraph(t)) 
+	ranges := GraphToRanges(w.BuildGraph(t))
 	wlst := make([]string, len(ranges))
 	for i, r := range ranges {
 		wlst[i] = string(t[r.s:r.e])

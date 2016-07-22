@@ -1,11 +1,11 @@
 package mapkha
 
 type DictAcceptor struct {
-	l int
-	r int
-	final bool
+	l      int
+	r      int
+	final  bool
 	offset int
-	valid bool
+	valid  bool
 }
 
 func NewDictAcceptor(l int, r int) *DictAcceptor {
@@ -36,11 +36,11 @@ func (a *DictAcceptor) Transit(ch rune, dict *Dict) {
 
 type AccPool struct {
 	acc []DictAcceptor
-	i int
+	i   int
 }
 
 func NewAccPool() *AccPool {
-	return &AccPool{make([]DictAcceptor,0, 4096), 0}
+	return &AccPool{make([]DictAcceptor, 0, 4096), 0}
 }
 
 func (pool *AccPool) Reset() {
