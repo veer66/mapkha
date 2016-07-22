@@ -1,10 +1,10 @@
 package mapkha
 
 import (
-	"io/ioutil"
+	"bufio"
+	"os"
 	"path"
 	"runtime"
-	"strings"
 )
 
 type Dict struct {
@@ -14,15 +14,15 @@ type Dict struct {
 }
 
 func LoadDict(path string) (*Dict, error) {
-	b_slice, err := ioutil.ReadFile(path)
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-	data := string(b_slice)
-	swords := strings.Split(data, "\r\n")
-	rwords := make([][]rune, len(swords))
-	for i, word := range swords {
-		rwords[i] = []rune(word)
+	defer f.Close()
+	var rwords [][]rune
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		rwords = append(rwords, []rune(scanner.Text()))
 	}
 	dict := Dict{rwords, len(rwords), nil}
 	dict.idx = MakeIndex(&dict)
