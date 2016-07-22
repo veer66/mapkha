@@ -13,13 +13,10 @@ func MakeIndex(rwords [][]rune) *Index {
 	r := make(l0idx)
 
 	for i, w := range rwords {
-		if len(w) > 0 {
-			_, exist := l[w[0]]
-			if !exist {
-				l[w[0]] = i
-			}
-			r[w[0]] = i
+		if _, exist := l[w[0]]; !exist {
+			l[w[0]] = i
 		}
+		r[w[0]] = i
 	}
 	return &Index{l, r}
 }

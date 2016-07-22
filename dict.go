@@ -22,7 +22,9 @@ func LoadDict(path string) (*Dict, error) {
 	var rwords [][]rune
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		rwords = append(rwords, []rune(scanner.Text()))
+		if line := scanner.Text(); len(line) != 0 {
+			rwords = append(rwords, []rune(line))
+		}
 	}
 	return &Dict{rwords, len(rwords), MakeIndex(rwords)}, nil
 }
