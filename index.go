@@ -8,11 +8,11 @@ type Index struct {
 	right0 l0idx
 }
 
-func MakeIndex(d *Dict) *Index {
+func MakeIndex(rwords [][]rune) *Index {
 	l := make(l0idx)
 	r := make(l0idx)
 
-	for i, w := range d.GetSlice() {
+	for i, w := range rwords {
 		if len(w) > 0 {
 			_, exist := l[w[0]]
 			if !exist {

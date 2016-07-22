@@ -24,9 +24,7 @@ func LoadDict(path string) (*Dict, error) {
 	for scanner.Scan() {
 		rwords = append(rwords, []rune(scanner.Text()))
 	}
-	dict := Dict{rwords, len(rwords), nil}
-	dict.idx = MakeIndex(&dict)
-	return &dict, nil
+	return &Dict{rwords, len(rwords), MakeIndex(rwords)}, nil
 }
 
 func LoadDefaultDict() (*Dict, error) {
