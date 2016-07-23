@@ -9,7 +9,7 @@ type Edge struct {
 	w     int
 	unk   int
 	p     int
-	etype int
+	etype Etype
 }
 
 type Wordcut struct {
