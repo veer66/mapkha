@@ -35,11 +35,8 @@ func LoadDefaultDict() (*Dict, error) {
 }
 
 func (d *Dict) DictSeek(policy Policy, l int, r int, offset int, ch rune) (int, bool) {
-	var (
-		ans   = 0
-		m     = 0
-		found = false
-	)
+	var ans, m int
+	var found bool
 
 	if offset == 0 {
 		return d.idx.Get0(policy, ch)
