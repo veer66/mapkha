@@ -80,8 +80,7 @@ func (w *Wordcut) BuildGraph(t []rune) []Edge {
 	left := 0
 	for i, ch := range t {
 		acc = w.TransitAll(acc, ch)
-		edges := BuildEdges(i, acc, g, left)
-		e := BestEdge(edges)
+		e := BestEdge(BuildEdges(i, acc, g, left))
 		if e.etype != UNK {
 			left = i + 1
 		}

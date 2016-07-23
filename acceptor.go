@@ -22,16 +22,16 @@ func (a *DictAcceptor) Reset(l int, r int) {
 
 func (a *DictAcceptor) Transit(ch rune, dict *Dict) {
 	var found bool
-	a.l, found = dict.DictSeek(LEFT, a.l, a.r, a.offset, ch)
-	if found {
-		a.r, _ = dict.DictSeek(RIGHT, a.l, a.r, a.offset, ch)
-		a.offset++
-		w := dict.GetWord(a.l)
-		wlen := len(w)
-		a.final = (wlen == a.offset)
-	} else {
+	if a.l, found = dict.DictSeek(LEFT, a.l, a.r, a.offset, ch); !found {
 		a.valid = false
+		return
 	}
+
+	a.r, _ = dict.DictSeek(RIGHT, a.l, a.r, a.offset, ch)
+	a.offset++
+	w := dict.GetWord(a.l)
+	wlen := len(w)
+	a.final = (wlen == a.offset)
 }
 
 type AccPool struct {
