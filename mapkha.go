@@ -22,9 +22,9 @@ func NewWordcut(dict *Dict) *Wordcut {
 }
 
 func (w *Wordcut) TransitAll(acc []*DictAcceptor, ch rune) []*DictAcceptor {
-	_acc := append(acc, w.pool.Obtain(0, w.dict.R()))
-	__acc := make([]*DictAcceptor, 0, len(_acc))
-	for _, a := range _acc {
+	acc = append(acc, w.pool.Obtain(0, w.dict.R()))
+	__acc := make([]*DictAcceptor, 0, len(acc))
+	for _, a := range acc {
 		a.Transit(ch, w.dict)
 		if a.valid {
 			__acc = append(__acc, a)
