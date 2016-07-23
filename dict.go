@@ -41,27 +41,16 @@ func (d *Dict) DictSeek(policy Policy, l int, r int, offset int, ch rune) (ans i
 
 	for m := (l + r) / 2; l <= r; m = (l + r) / 2 {
 		w := d.dict[m]
-
 		if wlen := len(w); wlen <= offset {
 			l = m + 1
-			continue
-		}
-
-		switch ch_ := w[offset]; {
-		case ch_ < ch:
+		} else if ch_ := w[offset]; ch_ < ch {
 			l = m + 1
-		case ch_ > ch:
+		} else if ch_ > ch {
 			r = m - 1
-		default:
-			ans = m
-			found = true
-			switch policy {
-			case LEFT:
-				r = m - 1
-			case RIGHT:
-				l = m + 1
-			}
-
+		} else if ans, found = m, true; policy == LEFT {
+			r = m - 1
+		} else {
+			l = m + 1
 		}
 	}
 	return
