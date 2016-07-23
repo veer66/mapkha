@@ -8,10 +8,6 @@ type DictAcceptor struct {
 	valid  bool
 }
 
-func NewDictAcceptor(l int, r int) *DictAcceptor {
-	return &DictAcceptor{l, r, false, 0, true}
-}
-
 func (a *DictAcceptor) Reset(l int, r int) {
 	a.l = l
 	a.r = r
@@ -48,15 +44,12 @@ func (pool *AccPool) Reset() {
 }
 
 func (pool *AccPool) Obtain(l int, r int) *DictAcceptor {
-	if pool.i < len(pool.acc) {
-		a := &pool.acc[pool.i]
-		a.Reset(l, r)
-		pool.i++
-		return a
-	} else {
-		a := NewDictAcceptor(l, r)
-		pool.acc = append(pool.acc, *a)
-		pool.i++
-		return a
+	if pool.i >= len(pool.acc) {
+		pool.acc = append(pool.acc, DictAcceptor{})
 	}
+
+	a := &pool.acc[pool.i]
+	a.Reset(l, r)
+	pool.i++
+	return a
 }
