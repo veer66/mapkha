@@ -6,7 +6,9 @@ const (
 	INIT = 3
 )
 
+type Policy int
+
 const (
-	LEFT  = 1
-	RIGHT = 2
+	LEFT  Policy = 1
+	RIGHT Policy = 2
 )

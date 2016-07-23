@@ -34,15 +34,15 @@ func LoadDefaultDict() (*Dict, error) {
 	return LoadDict(path.Join(path.Dir(filename), "tdict-std.txt"))
 }
 
-func (d *Dict) DictSeek(policy int, l int, r int, offset int, ch rune) (int, bool) {
-	ans := 0
-	found := false
-	m := 0
+func (d *Dict) DictSeek(policy Policy, l int, r int, offset int, ch rune) (int, bool) {
+	var (
+		ans   = 0
+		m     = 0
+		found = false
+	)
 
-	if d.idx != nil {
-		if offset == 0 {
-			return d.idx.Get0(policy, ch)
-		}
+	if offset == 0 {
+		return d.idx.Get0(policy, ch)
 	}
 
 	for l <= r {

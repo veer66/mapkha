@@ -21,7 +21,7 @@ func MakeIndex(rwords [][]rune) *Index {
 	return &Index{l, r}
 }
 
-func (idx *Index) Get0(policy int, ch rune) (int, bool) {
+func (idx *Index) Get0(policy Policy, ch rune) (int, bool) {
 	var i int
 	var found bool
 	switch policy {
