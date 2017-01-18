@@ -6,8 +6,8 @@ import (
 )
 
 func TestOneCharPrefixTree(t *testing.T) {
-	words := [...]WordWithPayload{{"A", 10}}
-	prefixTree := MakePrefixTree(words[:])
+	words := []WordWithPayload{{"A", 10}}
+	prefixTree := MakePrefixTree(words)
 	expect := &PrefixTreePointer{0, true, 10}
 	child, found := prefixTree.Lookup(0, 0, 'A')
 
@@ -21,8 +21,8 @@ func TestOneCharPrefixTree(t *testing.T) {
 }
 
 func TestOneWordPrefixTree(t *testing.T) {
-	words := [...]WordWithPayload{{"AB", 20}}
-	prefixTree := MakePrefixTree(words[:])
+	words := []WordWithPayload{{"AB", 20}}
+	prefixTree := MakePrefixTree(words)
 
 	var expect *PrefixTreePointer
 	var child *PrefixTreePointer
@@ -52,8 +52,8 @@ func TestOneWordPrefixTree(t *testing.T) {
 }
 
 func TestTwoWordsPrefixTree(t *testing.T) {
-	words := [...]WordWithPayload{{"AB", 20}, {"AC", 30}, {"D", 40}}
-	prefixTree := MakePrefixTree(words[:])
+	words := []WordWithPayload{{"AB", 20}, {"AC", 30}, {"D", 40}}
+	prefixTree := MakePrefixTree(words)
 
 	var expect *PrefixTreePointer
 	var child *PrefixTreePointer
