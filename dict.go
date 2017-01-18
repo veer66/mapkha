@@ -7,77 +7,50 @@ import (
 	"runtime"
 )
 
+// Dict is a prefix tree
 type Dict struct {
-	dict [][]rune
-	l    int
-	idx  *Index
+	tree *PrefixTree
 }
 
+// LoadDict is for loading a word list from file
 func LoadDict(path string) (*Dict, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	var rwords [][]rune
+	wordWithPayloads := make([]WordWithPayload, 0)
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		if line := scanner.Text(); len(line) != 0 {
-			rwords = append(rwords, []rune(line))
+			wordWithPayloads = append(wordWithPayloads,
+				WordWithPayload{line, true})
 		}
 	}
-	return &Dict{rwords, len(rwords), MakeIndex(rwords)}, nil
+	tree := MakePrefixTree(wordWithPayloads)
+	dix := Dict{tree}
+	return &dix, nil
 }
 
+func MakeDict(words []string) *Dict {
+	wordWithPayloads := make([]WordWithPayload, len(words))
+	for _, word := range words {
+		wordWithPayloads = append(wordWithPayloads,
+			WordWithPayload{word, true})
+	}
+	tree := MakePrefixTree(wordWithPayloads)
+	dix := Dict{tree}
+	return &dix
+}
+
+// LoadDefaultDict - loading default Thai dictionary
 func LoadDefaultDict() (*Dict, error) {
 	_, filename, _, _ := runtime.Caller(0)
 	return LoadDict(path.Join(path.Dir(filename), "tdict-std.txt"))
 }
 
-func (d *Dict) DictSeek(policy Policy, l int, r int, offset int, ch rune) (ans int, found bool) {
-	if offset == 0 {
-		return d.idx.Get0(policy, ch)
-	}
-
-	for m := (l + r) / 2; l <= r; m = (l + r) / 2 {
-		w := d.dict[m]
-
-		wlen := len(w)
-		if wlen <= offset {
-			l = m + 1
-			continue
-		}
-
-		ch_ := w[offset]
-		if ch_ < ch {
-			l = m + 1
-			continue
-		}
-		if ch_ > ch {
-			r = m - 1
-			continue
-		}
-
-		if policy == LEFT {
-			r = m - 1
-		} else {
-			l = m + 1
-		}
-
-		ans = m
-		found = true
-	}
-	return
-}
-
-func (d *Dict) GetWord(i int) []rune {
-	return d.dict[i]
-}
-
-func (d *Dict) R() int {
-	return d.l - 1
-}
-
-func (d *Dict) GetSlice() [][]rune {
-	return d.dict
+// Lookup - lookup node in a Prefix Tree
+func (d *Dict) Lookup(p int, offset int, ch rune) (*PrefixTreePointer, bool) {
+	pointer, found := d.tree.Lookup(p, offset, ch)
+	return pointer, found
 }

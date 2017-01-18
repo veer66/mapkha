@@ -1,55 +1,58 @@
 package mapkha
 
 type DictAcceptor struct {
-	l      int
-	r      int
-	final  bool
+	p      int
 	offset int
+	final  bool
 	valid  bool
 }
 
-func (a *DictAcceptor) Reset(l int, r int) {
-	a.l = l
-	a.r = r
+// Reset - reset internal state
+func (a *DictAcceptor) Reset(p int) {
+	a.p = p
 	a.final = false
 	a.offset = 0
 	a.valid = true
 }
 
+// Transit - walk on prefix tree by new rune
 func (a *DictAcceptor) Transit(ch rune, dict *Dict) {
-	var found bool
-	if a.l, found = dict.DictSeek(LEFT, a.l, a.r, a.offset, ch); !found {
+	pointer, found := dict.Lookup(a.p, a.offset, ch)
+
+	if !found {
 		a.valid = false
 		return
 	}
 
-	a.r, _ = dict.DictSeek(RIGHT, a.l, a.r, a.offset, ch)
+	a.p = pointer.ChildID
 	a.offset++
-	w := dict.GetWord(a.l)
-	wlen := len(w)
-	a.final = (wlen == a.offset)
+	a.final = pointer.IsFinal
 }
 
+// AccPool - pool of dict acceptor
 type AccPool struct {
 	acc []DictAcceptor
 	i   int
 }
 
+// NewAccPool - build acceptor pool
 func NewAccPool() *AccPool {
 	return &AccPool{make([]DictAcceptor, 0, 4096), 0}
 }
 
+// Reset - reset acceptor pool
 func (pool *AccPool) Reset() {
 	pool.i = 0
 }
 
-func (pool *AccPool) Obtain(l int, r int) *DictAcceptor {
+// Obtain - obtain dict acceptor at p
+func (pool *AccPool) Obtain(p int) *DictAcceptor {
 	if pool.i >= len(pool.acc) {
 		pool.acc = append(pool.acc, DictAcceptor{})
 	}
 
 	a := &pool.acc[pool.i]
-	a.Reset(l, r)
+	a.Reset(p)
 	pool.i++
 	return a
 }
