@@ -1,12 +1,16 @@
 package mapkha
 
-const (
-	DICT = 1
-	UNK = 2
-	INIT = 3
-)
+type Etype int
 
 const (
-	LEFT = 1
-	RIGHT = 2
+	DICT Etype = 1
+	UNK        = 2
+	INIT       = 3
+)
+
+type Policy int
+
+const (
+	LEFT  Policy = 1
+	RIGHT        = 2
 )

@@ -1,7 +1,8 @@
 package mapkha
 
 import (
-    "testing"
+	"reflect"
+	"testing"
 )
 
 func TestLoadDefaultDict(t *testing.T) {
@@ -15,19 +16,18 @@ func TestBasic(t *testing.T) {
 	dict, _ := LoadDefaultDict()
 	wordcut := NewWordcut(dict)
 	wlst := wordcut.Segment("กากา")
-	if wlst[0] != "กา" || wlst[0] != "กา" || len(wlst) != 2 {
-		t.Fail()
+	expect := []string{"กา", "กา"}
+	if !reflect.DeepEqual(expect, wlst) {
+		t.Errorf("Expect %q got %q", expect, wlst)
 	}
 }
-
 
 func TestBasicUnk(t *testing.T) {
 	dict, _ := LoadDefaultDict()
 	wordcut := NewWordcut(dict)
 	wlst := wordcut.Segment("จะเว")
-	if wlst[0] != "จะ" || wlst[1] != "เว" || len(wlst) != 2 {
-		t.Fail()
+	expect := []string{"จะ", "เว"}
+	if !reflect.DeepEqual(expect, wlst) {
+		t.Errorf("Expect %q got %q", expect, wlst)
 	}
 }
-
-
