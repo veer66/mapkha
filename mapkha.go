@@ -3,7 +3,6 @@ package mapkha
 type edgeBuilderFactory func() EdgeBuilder
 
 type Wordcut struct {
-	dict                 *Dict
 	edgeBuilderFactories []edgeBuilderFactory
 }
 
@@ -15,7 +14,7 @@ func NewWordcut(dict *Dict) *Wordcut {
 		func() EdgeBuilder {
 			return &UnkEdgeBuilder{}
 		}}
-	return &Wordcut{dict, factories}
+	return &Wordcut{factories}
 }
 
 func (w *Wordcut) Segment(text string) []string {

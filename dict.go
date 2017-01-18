@@ -33,7 +33,7 @@ func LoadDict(path string) (*Dict, error) {
 }
 
 func MakeDict(words []string) *Dict {
-	wordWithPayloads := make([]WordWithPayload, len(words))
+	wordWithPayloads := make([]WordWithPayload, 0)
 	for _, word := range words {
 		wordWithPayloads = append(wordWithPayloads,
 			WordWithPayload{word, true})

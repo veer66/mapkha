@@ -1,7 +1,5 @@
 package mapkha
 
-import "fmt"
-
 type DictEdgeBuilder struct {
 	dict     *Dict
 	pointers []*dictBuilderPointer
@@ -38,7 +36,6 @@ func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
 			Offset:  0,
 			IsFinal: false})
 
-	fmt.Printf("@@@ %#v\n", oldPointers)
 	pointers := make([]*dictBuilderPointer, 0)
 
 	// (->> (map updatePointer) (remove nil))
@@ -53,7 +50,6 @@ func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
 	var bestEdge *Edge
 
 	for _, pointer := range pointers {
-		fmt.Printf("P %#v\n", pointer)
 		if pointer.IsFinal {
 			source := context.Path[pointer.S]
 			edge := &Edge{
@@ -61,7 +57,6 @@ func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
 				EdgeType:  DICT,
 				WordCount: source.WordCount + 1,
 				UnkCount:  source.UnkCount}
-			fmt.Printf("DICT-EDGE %#v\n", edge)
 			if edge.IsBetterThan(bestEdge) {
 				bestEdge = edge
 			}

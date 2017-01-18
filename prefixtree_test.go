@@ -44,6 +44,18 @@ func TestTwoWordsPrefixTree(t *testing.T) {
 	testLookup(t, expect, "Expect to find 0, 0, D")(prefixTree.Lookup(0, 0, 'D'))
 }
 
+func TestKaPrefixTree(t *testing.T) {
+	words := []WordWithPayload{{"กา", true}}
+	prefixTree := MakePrefixTree(words)
+	var expect *PrefixTreePointer
+
+	expect = &PrefixTreePointer{0, false, nil}
+	testLookup(t, expect, "Expect to find 0, 0, ก")(prefixTree.Lookup(0, 0, 'ก'))
+
+	expect = &PrefixTreePointer{0, true, true}
+	testLookup(t, expect, "Expect to find 0, 1, า")(prefixTree.Lookup(0, 1, 'า'))
+}
+
 func testLookup(t *testing.T, expect *PrefixTreePointer, msg string) func(*PrefixTreePointer, bool) {
 	return func(child *PrefixTreePointer, found bool) {
 		if !found {

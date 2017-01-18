@@ -1,15 +1,10 @@
 package mapkha
 
-import (
-	"fmt"
-)
-
 func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []Edge {
 	path := make([]Edge, len(textRunes)+1)
 	path[0] = Edge{S: 0, EdgeType: INIT, WordCount: 0, UnkCount: 0}
 	leftBoundary := 0
 	for i, ch := range textRunes {
-		fmt.Printf("I=%#v ch=%#v\n", i, ch)
 		var bestEdge *Edge
 		for _, edgeBuilder := range edgeBuilders {
 			context := EdgeBuildingContext{
@@ -21,7 +16,7 @@ func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []Edge {
 				BestEdge:     bestEdge}
 			edge := edgeBuilder.Build(&context)
 
-			if edge.IsBetterThan(bestEdge) {
+			if edge != nil && edge.IsBetterThan(bestEdge) {
 				bestEdge = edge
 			}
 		}
@@ -33,6 +28,8 @@ func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []Edge {
 		if bestEdge.EdgeType != UNK {
 			leftBoundary = i + 1
 		}
+
+		path[i+1] = *bestEdge
 	}
 	return path
 }
