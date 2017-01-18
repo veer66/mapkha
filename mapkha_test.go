@@ -15,6 +15,26 @@ func TestWithSmallDict(t *testing.T) {
 	}
 }
 
+func TestSpace(t *testing.T) {
+	dict := MakeDict([]string{"กา"})
+	wordcut := NewWordcut(dict)
+	tokens := wordcut.Segment("ขา ขา")
+	expect := []string{"ขา", " ", "ขา"}
+	if !reflect.DeepEqual(expect, tokens) {
+		t.Errorf("Expect %q got %q", expect, tokens)
+	}
+}
+
+func TestLatin(t *testing.T) {
+	dict := MakeDict([]string{"กา"})
+	wordcut := NewWordcut(dict)
+	tokens := wordcut.Segment("ขาACขา")
+	expect := []string{"ขา", "AC", "ขา"}
+	if !reflect.DeepEqual(expect, tokens) {
+		t.Errorf("Expect %q got %q", expect, tokens)
+	}
+}
+
 func TestLoadDefaultDict(t *testing.T) {
 	_, err := LoadDefaultDict()
 	if err != nil {

@@ -12,6 +12,23 @@ func NewWordcut(dict *Dict) *Wordcut {
 			return NewDictEdgeBuilder(dict)
 		},
 		func() EdgeBuilder {
+			return &PatEdgeBuilder{foundS: false,
+				foundE:   false,
+				edgeType: SPACE,
+				isPat: func(ch rune) bool {
+					return ch == ' '
+				}}
+		},
+		func() EdgeBuilder {
+			return &PatEdgeBuilder{foundS: false,
+				foundE:   false,
+				edgeType: LATIN,
+				isPat: func(ch rune) bool {
+					return (ch >= 'A' && ch <= 'Z') ||
+						(ch >= 'a' && ch <= 'z')
+				}}
+		},
+		func() EdgeBuilder {
 			return &UnkEdgeBuilder{}
 		}}
 	return &Wordcut{factories}
