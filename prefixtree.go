@@ -24,7 +24,7 @@ type PrefixTreePointer struct {
 
 // PrefixTree is a Hash-based Prefix Tree for searching words
 type PrefixTree struct {
-	tab map[PrefixTreeNode]PrefixTreePointer
+	tab map[PrefixTreeNode]*PrefixTreePointer
 }
 
 type byWord []WordWithPayload
@@ -45,7 +45,7 @@ func (wordsWithPayload byWord) Less(i, j int) bool {
 // MakePrefixTree is for constructing prefix tree for word with payload list
 func MakePrefixTree(wordsWithPayload []WordWithPayload) *PrefixTree {
 	sort.Sort(byWord(wordsWithPayload))
-	tab := make(map[PrefixTreeNode]PrefixTreePointer)
+	tab := make(map[PrefixTreeNode]*PrefixTreePointer)
 
 	for i, wordWithPayload := range wordsWithPayload {
 		word := wordWithPayload.Word
@@ -65,8 +65,7 @@ func MakePrefixTree(wordsWithPayload []WordWithPayload) *PrefixTree {
 				} else {
 					thisPayload = nil
 				}
-				pointer := PrefixTreePointer{i, isFinal, thisPayload}
-				tab[node] = pointer
+				tab[node] = &PrefixTreePointer{i, isFinal, thisPayload}
 				rowNo = i
 			} else {
 				rowNo = child.ChildID
@@ -79,5 +78,5 @@ func MakePrefixTree(wordsWithPayload []WordWithPayload) *PrefixTree {
 // Lookup - look up prefix tree from node-id, offset and a character
 func (tree *PrefixTree) Lookup(nodeID int, offset int, ch rune) (*PrefixTreePointer, bool) {
 	pointer, found := tree.tab[PrefixTreeNode{nodeID, offset, ch}]
-	return &pointer, found
+	return pointer, found
 }
