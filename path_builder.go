@@ -1,20 +1,22 @@
 package mapkha
 
-func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []Edge {
-	path := make([]Edge, len(textRunes)+1)
-	path[0] = Edge{S: 0, EdgeType: INIT, WordCount: 0, UnkCount: 0}
+var globalContext = &EdgeBuildingContext{}
+
+func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []*Edge {
+	path := make([]*Edge, len(textRunes)+1)
+	path[0] = &Edge{S: 0, EdgeType: INIT, WordCount: 0, UnkCount: 0}
 	leftBoundary := 0
 	for i, ch := range textRunes {
 		var bestEdge *Edge
 		for _, edgeBuilder := range edgeBuilders {
-			context := EdgeBuildingContext{
-				runes:        textRunes,
-				Path:         path,
-				I:            i,
-				Ch:           ch,
-				LeftBoundary: leftBoundary,
-				BestEdge:     bestEdge}
-			edge := edgeBuilder.Build(&context)
+			globalContext.runes = textRunes
+			globalContext.Path = path
+			globalContext.I = i
+			globalContext.Ch = ch
+			globalContext.LeftBoundary = leftBoundary
+			globalContext.BestEdge = bestEdge
+
+			edge := edgeBuilder.Build(globalContext)
 
 			if edge != nil && edge.IsBetterThan(bestEdge) {
 				bestEdge = edge
@@ -29,7 +31,7 @@ func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []Edge {
 			leftBoundary = i + 1
 		}
 
-		path[i+1] = *bestEdge
+		path[i+1] = bestEdge
 	}
 	return path
 }
