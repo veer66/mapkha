@@ -21,35 +21,36 @@ func (builder *DictEdgeBuilder) updatePointer(pointer *dictBuilderPointer, ch ru
 	if !found {
 		return nil
 	}
-	return &dictBuilderPointer{NodeID: pointer.NodeID,
-		S:       pointer.S,
-		Offset:  pointer.Offset + 1,
-		IsFinal: childNode.IsFinal}
+	pointer.Offset += 1
+	pointer.IsFinal = childNode.IsFinal
+	return pointer
 }
 
 // Build - build new edge from dictionary
 func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
-	oldPointers := append(builder.pointers,
+	builder.pointers = append(builder.pointers,
 		&dictBuilderPointer{
 			NodeID:  0,
 			S:       context.I,
 			Offset:  0,
 			IsFinal: false})
 
-	pointers := make([]*dictBuilderPointer, 0)
+	//pointers := make([]*dictBuilderPointer, 0)
 
 	// (->> (map updatePointer) (remove nil))
-	for _, pointer := range oldPointers {
-		newPointer := builder.updatePointer(pointer, context.Ch)
+	newIndex := 0
+	for i, _ := range builder.pointers {
+		newPointer := builder.updatePointer(builder.pointers[i], context.Ch)
 		if newPointer != nil {
-			pointers = append(pointers, newPointer)
+			builder.pointers[newIndex] = newPointer
+			newIndex++
 		}
 	}
 
-	builder.pointers = pointers
+	builder.pointers = builder.pointers[:newIndex]
 	var bestEdge *Edge
 
-	for _, pointer := range pointers {
+	for _, pointer := range builder.pointers {
 		if pointer.IsFinal {
 			source := context.Path[pointer.S]
 			edge := &Edge{
