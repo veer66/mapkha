@@ -16,3 +16,5 @@ func (builder *UnkEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
 		WordCount: source.WordCount + 1,
 		UnkCount:  source.UnkCount + 1}
 }
+
+func (builder *UnkEdgeBuilder) Reset() {}

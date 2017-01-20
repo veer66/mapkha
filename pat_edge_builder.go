@@ -32,10 +32,18 @@ func (builder *PatEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
 
 	if builder.foundS && builder.foundE {
 		source := context.Path[builder.s]
+		builder.foundS = false
+		builder.foundE = false
 		return &Edge{S: builder.s,
 			EdgeType:  builder.edgeType,
 			WordCount: source.WordCount + 1,
 			UnkCount:  source.UnkCount}
 	}
 	return nil
+}
+
+func (builder *PatEdgeBuilder) Reset() {
+	builder.foundS = false
+	builder.foundE = false
+	builder.s = 0
 }

@@ -13,7 +13,7 @@ type dictBuilderPointer struct {
 }
 
 func NewDictEdgeBuilder(dict *Dict) *DictEdgeBuilder {
-	return &DictEdgeBuilder{dict, make([]*dictBuilderPointer, 0)}
+	return &DictEdgeBuilder{dict, make([]*dictBuilderPointer, 0, 20)}
 }
 
 func (builder *DictEdgeBuilder) updatePointer(pointer *dictBuilderPointer, ch rune) *dictBuilderPointer {
@@ -21,6 +21,7 @@ func (builder *DictEdgeBuilder) updatePointer(pointer *dictBuilderPointer, ch ru
 	if !found {
 		return nil
 	}
+	pointer.NodeID = childNode.ChildID
 	pointer.Offset += 1
 	pointer.IsFinal = childNode.IsFinal
 	return pointer
@@ -28,16 +29,8 @@ func (builder *DictEdgeBuilder) updatePointer(pointer *dictBuilderPointer, ch ru
 
 // Build - build new edge from dictionary
 func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
-	builder.pointers = append(builder.pointers,
-		&dictBuilderPointer{
-			NodeID:  0,
-			S:       context.I,
-			Offset:  0,
-			IsFinal: false})
+	builder.pointers = append(builder.pointers, &dictBuilderPointer{S: context.I})
 
-	//pointers := make([]*dictBuilderPointer, 0)
-
-	// (->> (map updatePointer) (remove nil))
 	newIndex := 0
 	for i, _ := range builder.pointers {
 		newPointer := builder.updatePointer(builder.pointers[i], context.Ch)
@@ -52,17 +45,22 @@ func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
 
 	for _, pointer := range builder.pointers {
 		if pointer.IsFinal {
-			source := context.Path[pointer.S]
+			s := 1 + context.I - pointer.Offset
+			source := context.Path[s]
 			edge := &Edge{
-				S:         pointer.S,
+				S:         s,
 				EdgeType:  DICT,
 				WordCount: source.WordCount + 1,
 				UnkCount:  source.UnkCount}
-			if edge.IsBetterThan(bestEdge) {
+			if !bestEdge.IsBetterThan(edge) {
 				bestEdge = edge
 			}
 		}
 	}
 
 	return bestEdge
+}
+
+func (builder *DictEdgeBuilder) Reset() {
+	builder.pointers = builder.pointers[:0]
 }

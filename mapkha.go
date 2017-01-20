@@ -3,7 +3,7 @@ package mapkha
 type edgeBuilderFactory func() EdgeBuilder
 
 type Wordcut struct {
-	edgeBuilderFactories []edgeBuilderFactory
+	edgeBuilders []EdgeBuilder
 }
 
 func NewWordcut(dict *Dict) *Wordcut {
@@ -16,7 +16,14 @@ func NewWordcut(dict *Dict) *Wordcut {
 				foundE:   false,
 				edgeType: SPACE,
 				isPat: func(ch rune) bool {
-					return ch == ' '
+					return ch == ' ' ||
+						ch == '\n' ||
+						ch == '\t' ||
+						ch == '"' ||
+						ch == '(' ||
+						ch == ')' ||
+						ch == '“' ||
+						ch == '”'
 				}}
 		},
 		func() EdgeBuilder {
@@ -31,16 +38,25 @@ func NewWordcut(dict *Dict) *Wordcut {
 		func() EdgeBuilder {
 			return &UnkEdgeBuilder{}
 		}}
-	return &Wordcut{factories}
+
+	w := &Wordcut{make([]EdgeBuilder, 0, 4)}
+	for _, factory := range factories {
+		w.edgeBuilders = append(w.edgeBuilders, factory())
+	}
+
+	return w
+}
+
+func (w *Wordcut) Reset() {
+	for _, builder := range w.edgeBuilders {
+		builder.Reset()
+	}
 }
 
 func (w *Wordcut) Segment(text string) []string {
+	w.Reset()
 	textRunes := []rune(text)
-	edgeBuilders := make([]EdgeBuilder, 0)
-	for _, factory := range w.edgeBuilderFactories {
-		edgeBuilders = append(edgeBuilders, factory())
-	}
-	path := buildPath(textRunes, edgeBuilders)
+	path := buildPath(textRunes, w.edgeBuilders)
 	ranges := pathToRanges(path)
 	tokens := make([]string, len(ranges))
 	for i, r := range ranges {

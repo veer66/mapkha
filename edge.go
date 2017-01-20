@@ -10,28 +10,15 @@ type Edge struct {
 
 // IsBetterThan - comparing this edge to another edge
 func (edge *Edge) IsBetterThan(another *Edge) bool {
+	if edge == nil {
+		return false
+	}
 
 	if another == nil {
 		return true
 	}
 
-	if another.UnkCount > edge.UnkCount {
-		return true
-	}
-
-	if another.UnkCount < edge.UnkCount {
-		return false
-	}
-
-	if another.WordCount > edge.WordCount {
-		return true
-	}
-
-	if another.WordCount < edge.WordCount {
-		return false
-	}
-
-	if another.EdgeType == UNK && edge.EdgeType != UNK {
+	if (edge.UnkCount < another.UnkCount) || ((edge.UnkCount == another.UnkCount) && (edge.WordCount < another.WordCount)) {
 		return true
 	}
 
