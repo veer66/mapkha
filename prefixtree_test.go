@@ -56,6 +56,56 @@ func TestKaPrefixTree(t *testing.T) {
 	testLookup(t, expect, "Expect to find 0, 1, า")(prefixTree.Lookup(0, 1, 'า'))
 }
 
+func TestViaDict(t *testing.T) {
+	dict, _ := LoadDefaultDict()
+	var child *PrefixTreePointer
+	var found bool
+
+	child, found = dict.Lookup(0, 0, 'ม')
+	if !found {
+		t.Errorf("Expect to find ม")
+	}
+
+	child, found = dict.Lookup(child.ChildID, 1, 'า')
+	if !found {
+		t.Errorf("Expect to find า")
+	}
+
+	child, found = dict.Lookup(child.ChildID, 2, 'ต')
+	if !found {
+		t.Errorf("Expect to find ต")
+	}
+
+	child, found = dict.Lookup(child.ChildID, 3, 'ร')
+	if !found {
+		t.Errorf("Expect to find ร")
+	}
+
+	child, found = dict.Lookup(child.ChildID, 4, 'า')
+	if !found {
+		t.Errorf("Expect to find last า")
+	}
+
+	if !child.IsFinal {
+		t.Errorf("Expect last า to be final")
+	}
+
+}
+
+func TestViaDictNotFinal(t *testing.T) {
+	dict, _ := LoadDefaultDict()
+	var child *PrefixTreePointer
+
+	child, _ = dict.Lookup(0, 0, 'ต')
+
+	child, _ = dict.Lookup(child.ChildID, 1, 'ร')
+
+	if child.IsFinal {
+		t.Errorf("Expect last ร not to be final")
+	}
+
+}
+
 func testLookup(t *testing.T, expect *PrefixTreePointer, msg string) func(*PrefixTreePointer, bool) {
 	return func(child *PrefixTreePointer, found bool) {
 		if !found {
