@@ -22,6 +22,7 @@ func (builder *DictEdgeBuilder) updatePointer(pointer *dictBuilderPointer, ch ru
 		return nil
 	}
 	pointer.Offset += 1
+	pointer.NodeID = childNode.ChildID
 	pointer.IsFinal = childNode.IsFinal
 	return pointer
 }
