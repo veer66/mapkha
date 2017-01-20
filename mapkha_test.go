@@ -62,11 +62,22 @@ func TestBasicUnk(t *testing.T) {
 	}
 }
 
+func TestBokWa(t *testing.T) {
+	dict, _ := LoadDefaultDict()
+	wordcut := NewWordcut(dict)
+	wlst := wordcut.Segment("บอกว่า")
+	expect := []string{"บอก", "ว่า"}
+	if !reflect.DeepEqual(expect, wlst) {
+		t.Errorf("Expect %q got %q", expect, wlst)
+	}
+}
+
 func TestFromLaw(t *testing.T) {
 	dict, _ := LoadDefaultDict()
 	wordcut := NewWordcut(dict)
 	wlst := wordcut.Segment("มาตรา")
 	expect := []string{"มาตรา"}
+
 	if !reflect.DeepEqual(expect, wlst) {
 		t.Errorf("Expect %q got %q", expect, wlst)
 	}
