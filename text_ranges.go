@@ -1,8 +1,9 @@
 package mapkha
 
 type TextRange struct {
-	s int
-	e int
+	s        int
+	e        int
+	EdgeType Etype
 }
 
 // Improved as Roger Peppe suggested in his tweet
@@ -12,7 +13,7 @@ func pathToRanges(path []*Edge) []TextRange {
 	j := len(ranges) - 1
 	for e := len(path) - 1; e > 0; {
 		s := path[e].S
-		ranges[j] = TextRange{s, e}
+		ranges[j] = TextRange{s, e, path[e].EdgeType}
 		j--
 		e = s
 	}

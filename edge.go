@@ -32,7 +32,7 @@ func GraphToRanges(path []Edge) []TextRange {
 	j := len(ranges) - 1
 	for e := len(path) - 1; e > 0; {
 		s := path[e].S
-		ranges[j] = TextRange{s, e}
+		ranges[j] = TextRange{s, e, path[e].EdgeType}
 		j--
 		e = s
 	}
