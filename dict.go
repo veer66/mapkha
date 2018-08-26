@@ -46,7 +46,7 @@ func MakeDict(words []string) *Dict {
 // LoadDefaultDict - loading default Thai dictionary
 func LoadDefaultDict() (*Dict, error) {
 	_, filename, _, _ := runtime.Caller(0)
-	return LoadDict(path.Join(path.Dir(filename), "wordcorpus/chula-tnc-2017.txt"))
+	return LoadDict(path.Join(path.Dir(filename), "tdict-std.txt"))
 }
 
 // Lookup - lookup node in a Prefix Tree
