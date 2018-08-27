@@ -61,3 +61,8 @@ func main() {
 }
 
 ```
+
+# Contributors
+* Vee Satayamas
+* Weerasak Chongnguluam (@iporsut)
+* Phongphan Phienphanich (@kapong)
